@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SuperHeroAPI;
+using SuperHeroAPI.Data;
 
 namespace SuperHeroAPI.Controllers
 {
@@ -11,14 +13,14 @@ namespace SuperHeroAPI.Controllers
         private static List<SuperHero> heroes = new List<SuperHero>
         {
 
-          new SuperHero {
+          //new SuperHero {
 
-               Id = 1,
-                Name = "Spider Man",
-                FirstName = "Peter",
-                LastName = "Parker",
-                Place = "New York City"
-          },
+          //     Id = 1,
+          //      Name = "Spider Man",
+          //      FirstName = "Peter",
+          //      LastName = "Parker",
+          //      Place = "New York City"
+          //},
 
              new SuperHero {
 
@@ -30,12 +32,24 @@ namespace SuperHeroAPI.Controllers
           }
         };
 
+        // Constructor datacontext
+        //public DataContext Context { get; }
+
+
+        private readonly DataContext _context;
+        public SuperHeroController(DataContext context)
+        {
+            _context = context;
+        }
+
+
+
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> Get()
 
         {
 
-            return Ok(heroes);
+            return Ok(await _context.SuperHeroes.ToListAsync());
 
         }
 
@@ -43,7 +57,14 @@ namespace SuperHeroAPI.Controllers
         public async Task<ActionResult<List<SuperHero>>> Get(int id)
 
         {
-            var hero = heroes.Find(h => h.Id == id);
+            //precedente variabile
+            //var hero = heroes.Find(h => h.Id == id);
+
+            // utilizzo FindAsync
+
+            var hero = await _context.SuperHeroes.FindAsync(id);
+
+
             if (hero == null)
 
                 return BadRequest("Hero not found");
