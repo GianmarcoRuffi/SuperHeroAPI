@@ -11,122 +11,89 @@ namespace SuperHeroAPI.Controllers
     [ApiController]
     public class SuperHeroController : ControllerBase
     {
-        //private static List<SuperHero> heroes = new List<SuperHero>
-        //{
+        private readonly ISuperHeroService _service;
 
-        //  //new SuperHero {
-
-        //  //     Id = 1,
-        //  //      Name = "Spider Man",
-        //  //      FirstName = "Peter",
-        //  //      LastName = "Parker",
-        //  //      Place = "New York City"
-        //  //},
-
-        //     new SuperHero {
-
-        //       Id = 2,
-        //        Name = "Iron Man",
-        //        FirstName = "Tony",
-        //        LastName = "Stark",
-        //        Place = "Long Island"
-        //  }
-        //};
-
-        // Constructor datacontext
-        //public DataContext Context { get; }
-
-
-        private readonly DataContext _context;
-        public SuperHeroController(DataContext context)
+        public SuperHeroController(ISuperHeroService service)
         {
-            _context = context;
+            _service = service;
         }
-
-
 
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> Get()
-
         {
-
-            return Ok(await _context.SuperHeroes.ToListAsync());
-
+            try
+            {
+                var heroes = await _service.GetHeroes();
+                return Ok(heroes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<SuperHero>>> Get(int id)
-
+        public async Task<ActionResult<SuperHero>> GetHeroById(int id)
         {
-            //precedente variabile
-            //var hero = heroes.Find(h => h.Id == id);
-
-            // utilizzo FindAsync
-
-            var hero = await _context.SuperHeroes.FindAsync(id);
-
-
-            if (hero == null)
-
-                return BadRequest("Hero not found");
-
-            return Ok(hero);
-
+            try
+            {
+                var hero = await _service.GetHeroById(id);
+                if (hero == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hero);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
-
 
         [HttpPost]
-
         public async Task<ActionResult<List<SuperHero>>> AddHero(SuperHero hero)
         {
-
-            _context.SuperHeroes.Add(hero);
-            await _context.SaveChangesAsync();
-
-            return Ok(await _context.SuperHeroes.ToListAsync());
+            try
+            {
+                var heroes = await _service.AddHero(hero);
+                return Ok(heroes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
-
 
         [HttpPut]
-
-        public async Task<ActionResult<List<SuperHero>>> UpdateHero(SuperHero request)
+        public async Task<ActionResult<List<SuperHero>>> UpdateHero(SuperHero heroToUpdate)
         {
-
-            var dbHero = await _context.SuperHeroes.FindAsync(request.Id);
-            if (dbHero == null)
-
-                return BadRequest("Hero not found");
-
-            dbHero.Name = request.Name;
-            dbHero.FirstName = request.FirstName;
-            dbHero.LastName = request.LastName;
-            dbHero.Place = request.Place;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(await _context.SuperHeroes.ToListAsync());
+            try
+            {
+                var heroes = await _service.UpdateHero(heroToUpdate);
+                return Ok(heroes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
-
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<SuperHero>>> Delete(int id)
-
+        public async Task<ActionResult<List<SuperHero>>> DeleteHero(int id)
         {
-            var hero = await _context.SuperHeroes.FindAsync(id);
-            if (hero == null)
-
-                return BadRequest("Hero not found");
-
-
-            _context.SuperHeroes.Remove(hero);
-            await _context.SaveChangesAsync();
-
-            return Ok(await _context.SuperHeroes.ToListAsync());
-
+            try
+            {
+                var heroes = await _service.DeleteHero(id);
+                return Ok(heroes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
-
     }
 }
+
 
 
 

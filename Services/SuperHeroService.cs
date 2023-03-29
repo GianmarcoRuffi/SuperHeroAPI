@@ -45,7 +45,7 @@ public class SuperHeroService : ISuperHeroService
         return await _context.SuperHeroes.ToListAsync();
     }
 
-    public async Task<List<SuperHero>> Delete(int id)
+    public async Task<List<SuperHero>> DeleteHero(int id)
     {
         var hero = await _context.SuperHeroes.FindAsync(id);
         if (hero == null)
@@ -58,8 +58,5 @@ public class SuperHeroService : ISuperHeroService
         return await _context.SuperHeroes.ToListAsync();
     }
 
-    public Task<List<SuperHero>> DeleteHero(int id)
-    {
-        throw new NotImplementedException();
-    }
+
 }

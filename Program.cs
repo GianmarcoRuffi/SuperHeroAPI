@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<ISuperHeroService, SuperHeroService>();
+
+
 // Add Db Context
 
 builder.Services.AddDbContext<DataContext>(options =>
