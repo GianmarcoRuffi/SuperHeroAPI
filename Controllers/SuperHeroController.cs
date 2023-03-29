@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SuperHeroAPI;
 using SuperHeroAPI.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace SuperHeroAPI.Controllers
 {
