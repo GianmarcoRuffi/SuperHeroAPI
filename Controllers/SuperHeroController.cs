@@ -11,11 +11,11 @@ namespace SuperHeroAPI.Controllers
     [ApiController]
     public class SuperHeroController : ControllerBase
     {
-        private readonly ISuperHeroService _service;
+        private readonly ISuperHeroRepository _repository;
 
-        public SuperHeroController(ISuperHeroService service)
+        public SuperHeroController(ISuperHeroRepository repository)
         {
-            _service = service;
+            _repository = repository;
         }
 
         [HttpGet]
@@ -23,7 +23,7 @@ namespace SuperHeroAPI.Controllers
         {
             try
             {
-                var heroes = await _service.GetHeroes();
+                var heroes = await _repository.GetHeroes();
                 return Ok(heroes);
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace SuperHeroAPI.Controllers
         {
             try
             {
-                var hero = await _service.GetHeroById(id);
+                var hero = await _repository.GetHeroById(id);
                 if (hero == null)
                 {
                     return NotFound();
@@ -55,8 +55,11 @@ namespace SuperHeroAPI.Controllers
         {
             try
             {
-                var heroes = await _service.AddHero(hero);
-                return Ok(heroes);
+                await _repository.AddHero(hero);
+
+                //return Ok(heroes);
+
+                return Ok(await _repository.GetHeroes());
             }
             catch (Exception ex)
             {
@@ -65,12 +68,13 @@ namespace SuperHeroAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<SuperHero>>> UpdateHero(SuperHero heroToUpdate)
+        public async Task<ActionResult<List<SuperHero>>> UpdateHero(SuperHero request)
         {
             try
             {
-                var heroes = await _service.UpdateHero(heroToUpdate);
-                return Ok(heroes);
+                await _repository.UpdateHero(request);
+
+                return Ok(await _repository.GetHeroes());
             }
             catch (Exception ex)
             {
@@ -83,8 +87,9 @@ namespace SuperHeroAPI.Controllers
         {
             try
             {
-                var heroes = await _service.DeleteHero(id);
-                return Ok(heroes);
+                await _repository.DeleteHero(id);
+
+                return Ok(await _repository.GetHeroes());
             }
             catch (Exception ex)
             {
