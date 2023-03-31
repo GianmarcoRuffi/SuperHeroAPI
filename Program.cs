@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<ISuperHeroService, SuperHeroService>();
+//builder.Services.AddScoped<ISuperHeroService, SuperHeroService>();
 
 // add repositories
 
